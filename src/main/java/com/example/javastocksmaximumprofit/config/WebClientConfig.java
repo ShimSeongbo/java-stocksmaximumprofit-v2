@@ -8,9 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Configuration
 public class WebClientConfig {
+
     @Bean
     public WebClient webClient() {
-
 
         return WebClient.builder().build();
 
@@ -51,6 +51,4 @@ public class WebClientConfig {
          *                 .build();
          */
     }
-
-
 }

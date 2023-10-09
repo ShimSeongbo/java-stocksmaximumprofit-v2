@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JavaStocksmaximumprofitApplication {
+public class JavaStocksMaximumProfitApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JavaStocksmaximumprofitApplication.class, args);
+        SpringApplication.run(JavaStocksMaximumProfitApplication.class, args);
     }
 
 }
