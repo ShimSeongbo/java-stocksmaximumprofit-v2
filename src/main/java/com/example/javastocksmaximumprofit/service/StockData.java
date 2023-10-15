@@ -11,8 +11,8 @@ public class StockData {
     private final LocalDate date;
     private final double price;
 
-    public StockData(LocalDate date, double price) {
+    public StockData(LocalDate date, double closePrice) {
         this.date = date;
-        this.price = price;
+        this.price = closePrice;
     }
 }
