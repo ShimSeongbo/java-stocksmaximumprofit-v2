@@ -23,19 +23,12 @@ public class StockController {
     }
 
     @GetMapping("/stocks/{symbol}/maxProfit")
-    public Mono<ResponseEntity<Double>> getMaximumProfit(@PathVariable String symbol) {
+    public ResponseEntity<Double> getMaximumProfit(@PathVariable String symbol) {
 
-        return stockService.fetchStockData(symbol)
-                .flatMap(jsonData -> {
-                    try {
-                        return Mono.just(stockService.convertToStockDataList(jsonData));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .map(stockDataList -> stockService.calculateMaximumProfit(stockDataList))
-                .map(maxProfit -> ResponseEntity.ok(maxProfit))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return stockService.getMaxProfit(symbol);
     }
 
+    /**
+     * flatMap 연산 / map 연산
+     */
 }

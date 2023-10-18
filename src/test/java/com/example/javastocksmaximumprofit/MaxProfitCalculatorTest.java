@@ -10,34 +10,43 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MaxProfitCalculatorTest {
 
-    private MaxProfitCalculator maxProfitCalculator;
+    private final MaxProfitCalculator maxProfitCalculator = new MaxProfitCalculator();
 
-    @BeforeEach
-    void setUp() {
-        maxProfitCalculator = new MaxProfitCalculator();
-    }
+    //min_price, max_price
+
+    /**
+     *     @BeforeEach
+     *     void setUp() {
+     *         maxProfitCalculator = new MaxProfitCalculator();
+     *     }
+     */
 
     @Test
-    void testMaxProfitCalculatorWhenPricesAreIncreasing() {
+    void testMaxProfitCalculatorWhenPricesAreIncreasing() throws Exception {
         // given
+        int minPrice = 100;
+        int maxPrice = 120;
+        int answer = maxPrice - minPrice;
+
         List<StockData> stockDataList = Arrays.asList(
-                new StockData(LocalDate.now(), 100),
+                new StockData(LocalDate.now(), minPrice),
                 new StockData(LocalDate.now().plusDays(1), 110),
-                new StockData(LocalDate.now().plusDays(2), 120)
+                new StockData(LocalDate.now().plusDays(2), maxPrice)
         );
 
         // when
         double profit = maxProfitCalculator.stocksMaxProfitCalculator(stockDataList);
 
         // then
-        assertEquals(20, profit);
+        assertEquals(answer, profit);
     }
 
     @Test
-    void testMaxProfitCalculatorWhenPricesAreDecreasing() {
+    void testMaxProfitCalculatorWhenPricesAreDecreasing() throws Exception {
         // given
         List<StockData> stockDataList = Arrays.asList(
                 new StockData(LocalDate.now(), 120),
@@ -53,7 +62,7 @@ class MaxProfitCalculatorTest {
     }
 
     @Test
-    void testMaxProfitCalculatorWhenPricesAreMixed() {
+    void testMaxProfitCalculatorWhenPricesAreMixed() throws Exception {
         // given
         List<StockData> stockDataList = Arrays.asList(
                 new StockData(LocalDate.now(), 100),
@@ -69,15 +78,21 @@ class MaxProfitCalculatorTest {
     }
 
     @Test
-    void testMaxProfitCalculatorWithEmptyList() {
+    void testMaxProfitCalculatorWithEmptyList()  {
         // given
         List<StockData> stockDataList = Collections.emptyList();
 
-        // when
-        double profit = maxProfitCalculator.stocksMaxProfitCalculator(stockDataList);
+        /**
+         *         // when
+         *         double profit = maxProfitCalculator.stocksMaxProfitCalculator(stockDataList);
+         *
+         *         // then
+         *         assertEquals(0, profit);
+         */
 
         // then
-        assertEquals(0, profit);
+        assertThrows(Exception.class, () -> maxProfitCalculator.stocksMaxProfitCalculator(stockDataList));
+
     }
 
     @Test
@@ -85,10 +100,7 @@ class MaxProfitCalculatorTest {
         // given
         List<StockData> stockDataList = Collections.singletonList(new StockData(LocalDate.now(), 100));
 
-        // when
-        double profit = maxProfitCalculator.stocksMaxProfitCalculator(stockDataList);
-
-        // then
-        assertEquals(0, profit);
+        //when
+        assertThrows(Exception.class, () -> maxProfitCalculator.stocksMaxProfitCalculator(stockDataList));
     }
 }

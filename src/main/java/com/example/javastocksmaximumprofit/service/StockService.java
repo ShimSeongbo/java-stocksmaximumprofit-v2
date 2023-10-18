@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,6 +31,9 @@ public class StockService {
     @Value("${alphavantage.api.key}")
     private String ALPHA_VANTAGE_API_KEY;
 
+    /**
+     * test - protected 로 변경하면 가능.
+     */
     public Mono<String> fetchStockData(String symbol) {
         validateStockSymbol(symbol);
 
@@ -49,6 +53,24 @@ public class StockService {
         } catch (Exception e) {
             throw new StockServiceException("Failed to fetch stock data for symbol: " + symbol);
         }
+    }
+
+    public ResponseEntity<Double> getMaxProfit(String symbol) {
+
+        return fetchStockData(symbol).flatMap(jsonData -> {
+                    try {
+                        return Mono.just(convertToStockDataList(jsonData));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .map(this::calculateMaximumProfit)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build()).block();
+
+        /**
+         * API 호출(동기/비동기)여야 유의미함.
+         */
     }
 
     public Mono<Void> validateStockSymbol(String symbol) {
@@ -75,7 +97,14 @@ public class StockService {
                 });
     }
 
-    public List<StockData> convertToStockDataList(String json) throws IOException {
+    /**
+     *  캡슐화/은닉화 -> public 하지 않게 만들어야함.
+     */
+    private List<StockData> convertToStockDataList(String json) throws IOException {
+
+        /**
+         *  null 아님.
+         */
         List<StockData> stockDataList = new ArrayList<>();
 
         // Jackson ObjectMapper를 사용하여 JSON 문자열을 파싱
@@ -99,8 +128,15 @@ public class StockService {
         return stockDataList;
     }
 
-    public double calculateMaximumProfit(List<StockData> stockDataList) {
-        return profitCalculator.stocksMaxProfitCalculator(stockDataList);
+    private double calculateMaximumProfit(List<StockData> stockDataList) {
+        try {
+            /**
+             *  stockDataList.forEach(System.out::println);
+             */
+            return profitCalculator.stocksMaxProfitCalculator(stockDataList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
